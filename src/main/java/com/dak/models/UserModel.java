@@ -2,7 +2,6 @@ package com.dak.models;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.dak.db.Database;
-import com.dak.db.tables.QuizTable;
 import com.dak.db.tables.UserTable;
 import com.dak.exceptions.DatabaseReadException;
 import org.jetbrains.annotations.NotNull;
