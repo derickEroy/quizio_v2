@@ -12,25 +12,9 @@ import com.github.weisj.jsvg.view.ViewBox;
 import org.jetbrains.annotations.NotNull;
 
 public class ImageSet {
-    private static final String IMAGES_DIR = "/assets/images";
+    private static final String IMAGES_DIR = "/assets/images/";
     private static final int DEFAULT_WIDTH = 50;
     private static final int DEFAULT_HEIGHT = 50;
-
-    public static ImageIcon getHtmlLogo() {
-        return getIconFromSVG("html.svg", DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    }
-
-    public static ImageIcon getHtmlLogo(int w, int h) {
-        return getIconFromSVG("html.svg", w, h);
-    }
-
-    public static ImageIcon getCssLogo() {
-        return getIconFromSVG("css.svg", DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    }
-
-    public static ImageIcon getCssLogo(int w, int h) {
-        return getIconFromSVG("css.svg", w, h);
-    }
 
     // FIXME: For now this will be public, then it could be refactored later.
     public static @NotNull ImageIcon getIconFromSVG(String fileName, int w, int h) {
