@@ -12,11 +12,14 @@ import com.github.weisj.jsvg.view.ViewBox;
 import org.jetbrains.annotations.NotNull;
 
 public class ImageSet {
-    private static final String IMAGES_DIR = "/assets/images/";
+    private static final String IMAGES_DIR = "/assets/images";
     private static final int DEFAULT_WIDTH = 50;
     private static final int DEFAULT_HEIGHT = 50;
 
-    // FIXME: For now this will be public, then it could be refactored later.
+    public static @NotNull ImageIcon getIconFromSVG(String filename) {
+        return getIconFromSVG(filename, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
+
     public static @NotNull ImageIcon getIconFromSVG(String fileName, int w, int h) {
         SVGLoader loader = new SVGLoader();
         URL svgUrl = ImageSet.class.getResource(IMAGES_DIR + "/" + fileName);
