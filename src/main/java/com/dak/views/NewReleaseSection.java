@@ -1,5 +1,6 @@
 package com.dak.views;
 
+import com.dak.models.QuizModel;
 import com.dak.views.components.SectionHeader;
 import com.dak.views.utils.SizeSet;
 
@@ -7,14 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class NewReleaseSection extends JPanel {
-    // Temporary placeholder titles.
-    private static final String[] titles = {
-            "Backend Design and Architecture",
-            "Full-Stack Web Development",
-            "Machine Learning",
-            "Data Structures and Algorithms"
-    };
-
     public NewReleaseSection() {
         setLayout(new BorderLayout());
 
@@ -25,12 +18,15 @@ public class NewReleaseSection extends JPanel {
 
         gbc.insets = new Insets(SizeSet.XS / 2, SizeSet.XS / 2, SizeSet.XS / 2, SizeSet.XS / 2);
 
-        for (int i = 0; i < titles.length; i++) {
+        // FIXME: Run this method asynchronously
+        java.util.List<QuizModel> quizzes = QuizModel.findAll();
+
+        for (int i = 0; i < quizzes.size(); i++) {
             gbc.gridx = i % 2;
             gbc.gridy = i / 2;
             gbc.weightx = 1.0;
             gbc.fill = GridBagConstraints.HORIZONTAL;
-            mainPanel.add(new NewReleaseCard(titles[i], "Quizio"), gbc);
+            mainPanel.add(new NewReleaseCard(quizzes.get(i)), gbc);
         }
 
         JPanel centerPanel = new JPanel(new BorderLayout());

@@ -3,6 +3,7 @@ package com.dak.models;
 import com.dak.db.Database;
 import com.dak.db.tables.QuizCategoryTable;
 import com.dak.exceptions.DatabaseReadException;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,6 +11,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.dak.db.tables.CategoryTable;
 
 public class QuizCategoryModel {
     public final UUID id;
@@ -53,6 +56,42 @@ public class QuizCategoryModel {
             }
 
             return arrayList;
+        } catch (SQLException error) {
+            throw new DatabaseReadException(error.getMessage());
+        }
+    }
+
+    public static @NotNull List<CategoryModel> findCategoriesFromQuizId(String id) {
+        String subquery = String.format("SELECT %s FROM %s WHERE %s = ?",
+            QuizCategoryTable.CATEGORY_ID,
+            QuizCategoryTable.TABLE_NAME,
+            QuizCategoryTable.QUIZ_ID
+        ); 
+        
+        String query = String.format("SELECT * FROM %s WHERE %s IN (%s)",
+            CategoryTable.TABLE_NAME,
+            CategoryTable.ID,
+            subquery
+        );
+
+        try (
+                Connection connection = Database.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)
+        ) {
+            preparedStatement.setString(1, id);
+            
+            try (ResultSet resultSet = preparedStatement.executeQuery();) {
+                ArrayList<CategoryModel> arrayList = new ArrayList<>();
+                while (resultSet.next()) {
+                    arrayList.add(new CategoryModel(
+                        UUID.fromString(resultSet.getString(CategoryTable.ID)),
+                        resultSet.getString(CategoryTable.NAME),
+                        resultSet.getString(CategoryTable.IMAGE)
+                    ));
+                }
+
+                return arrayList;
+            }
         } catch (SQLException error) {
             throw new DatabaseReadException(error.getMessage());
         }

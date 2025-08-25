@@ -11,10 +11,11 @@ import java.awt.event.MouseEvent;
 public class PrimaryButton extends JButton {
     public PrimaryButton(String text) {
         super(text);
-        setBorder(BorderFactory.createEmptyBorder(SizeSet.XS, SizeSet.XL, SizeSet.XS, SizeSet.XL));
+        // setBorder(BorderFactory.createEmptyBorder(SizeSet.XS, SizeSet.XL, SizeSet.XS, SizeSet.XL));
         setOpaque(true);
         setBackground(ColorSet.PRIMARY);
         setForeground(ColorSet.SECONDARY_FOREGROUND);
+        setMargin(new Insets(SizeSet.XS, SizeSet.XL, SizeSet.XS, SizeSet.XL));
 
         addMouseListener(new MouseAdapter() {
             @Override
