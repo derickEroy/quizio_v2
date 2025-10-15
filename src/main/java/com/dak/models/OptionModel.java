@@ -7,20 +7,13 @@ public class OptionModel {
     private final UUID questionId;
 
     private boolean isCorrect;
-    private PLACE place;
+    private int order;
     private String text;
 
-    public static enum PLACE {
-        A,
-        B,
-        C,
-        D
-    }
-
-    public OptionModel(UUID id, UUID questionId, PLACE place, String text, boolean isCorrect) {
+    public OptionModel(UUID id, UUID questionId, int order, String text, boolean isCorrect) {
         this.id = id;
         this.questionId = questionId;
-        this.place = place;
+        this.order = order;
         this.text = text;
         this.isCorrect = isCorrect;
     }
@@ -37,8 +30,8 @@ public class OptionModel {
         return isCorrect;
     }
 
-    public PLACE getPlace() {
-        return place;
+    public int getOrder() {
+        return order;
     }
 
     public String getText() {
