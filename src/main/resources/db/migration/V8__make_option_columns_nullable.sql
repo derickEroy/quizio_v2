@@ -1,0 +1,8 @@
+ALTER TABLE `option`
+MODIFY COLUMN `is_correct` BOOLEAN NULL;
+
+ALTER TABLE `option`
+DROP COLUMN `order`;
+
+ALTER TABLE `option`
+MODIFY COLUMN `text` VARCHAR(255) NULL;

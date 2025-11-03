@@ -15,7 +15,6 @@ public class OptionMapper {
         return new OptionModel(
             UUID.fromString(resultSet.getString(OptionTable.ID)),
             UUID.fromString(resultSet.getString(OptionTable.QUESTION_ID)),
-            resultSet.getInt(OptionTable.ORDER),
             resultSet.getString(OptionTable.TEXT),
             resultSet.getBoolean(OptionTable.IS_CORRECT)
         );

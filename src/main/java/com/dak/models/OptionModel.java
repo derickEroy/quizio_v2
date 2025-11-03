@@ -16,13 +16,11 @@ public class OptionModel {
     private final UUID questionId;
 
     private boolean isCorrect;
-    private int order;
     private String text;
 
-    public OptionModel(UUID id, UUID questionId, int order, String text, boolean isCorrect) {
+    public OptionModel(UUID id, UUID questionId, String text, boolean isCorrect) {
         this.id = id;
         this.questionId = questionId;
-        this.order = order;
         this.text = text;
         this.isCorrect = isCorrect;
     }
@@ -37,10 +35,6 @@ public class OptionModel {
 
     public boolean isCorrect() {
         return isCorrect;
-    }
-
-    public int getOrder() {
-        return order;
     }
 
     public String getText() {

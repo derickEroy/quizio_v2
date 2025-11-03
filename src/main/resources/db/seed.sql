@@ -155,46 +155,44 @@ INSERT INTO `question`(`id`, `quiz_id`, `type`, `text`) VALUES
 
 -- Option
 
-INSERT INTO `option`(`id`, `question_id`, `is_correct`, `order`, `text`) VALUES
-(UUID(), @id_question1, TRUE, NULL, 'final'),
+INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
+(UUID(), @id_question1, TRUE, 'final'),
 
-(UUID(), @id_question2, TRUE, NULL, '@Override'),
+(UUID(), @id_question2, TRUE, '@Override'),
 
-(UUID(), @id_question3, FALSE, NULL, 'Inheritance'),
-(UUID(), @id_question3, FALSE, NULL, 'Encapsulation'),
-(UUID(), @id_question3, TRUE, NULL, 'Polymorphism'),
-(UUID(), @id_question3, FALSE, NULL, 'Abstraction'),
+(UUID(), @id_question3, FALSE, 'Inheritance'),
+(UUID(), @id_question3, FALSE, 'Encapsulation'),
+(UUID(), @id_question3, TRUE, 'Polymorphism'),
+(UUID(), @id_question3, FALSE, 'Abstraction'),
 
-(UUID(), @id_question4, FALSE, NULL, 'imports'),
-(UUID(), @id_question4, TRUE, NULL, 'extends'),
-(UUID(), @id_question4, FALSE, NULL, 'inherits'),
-(UUID(), @id_question4, FALSE, NULL, 'implements'),
+(UUID(), @id_question4, FALSE, 'imports'),
+(UUID(), @id_question4, TRUE, 'extends'),
+(UUID(), @id_question4, FALSE, 'inherits'),
+(UUID(), @id_question4, FALSE, 'implements'),
 
-(UUID(), @id_question5, FALSE, NULL, 'Overloaded methods are resolved at runtime.'),
-(UUID(), @id_question5, TRUE, NULL, 'Overridden methods are resolved at runtime.'),
-(UUID(), @id_question5, FALSE, NULL, 'Static methods are resolved at runtime.'),
-(UUID(), @id_question5, FALSE, NULL, 'Constructors are resolved at runtime.'),
+(UUID(), @id_question5, FALSE, 'Overloaded methods are resolved at runtime.'),
+(UUID(), @id_question5, TRUE, 'Overridden methods are resolved at runtime.'),
+(UUID(), @id_question5, FALSE, 'Static methods are resolved at runtime.'),
+(UUID(), @id_question5, FALSE, 'Constructors are resolved at runtime.'),
 
-(UUID(), @id_question6, TRUE, NULL, 'Method Overloading'),
-(UUID(), @id_question6, TRUE, NULL, 'Method Overriding'),
-(UUID(), @id_question6, FALSE, NULL, 'Constructor chaining'),
-(UUID(), @id_question6, FALSE, NULL, 'Variable shadowing'),
+(UUID(), @id_question6, TRUE, 'Method Overloading'),
+(UUID(), @id_question6, TRUE, 'Method Overriding'),
+(UUID(), @id_question6, FALSE, 'Constructor chaining'),
+(UUID(), @id_question6, FALSE, 'Variable shadowing'),
 
-(UUID(), @id_question7, TRUE, NULL, 'The return type must be the same or covariant.'),
-(UUID(), @id_question7, FALSE, NULL, 'The access modifier can be more restrictive.'),
-(UUID(), @id_question7, TRUE, NULL, 'The method must have the same name and parameters.'),
-(UUID(), @id_question7, FALSE, NULL, 'Static methods can be overridden.'),
-(UUID(), @id_question7, TRUE, NULL, 'The overriding method can throw narrower checked exceptions.'),
+(UUID(), @id_question7, TRUE, 'The return type must be the same or covariant.'),
+(UUID(), @id_question7, FALSE, 'The access modifier can be more restrictive.'),
+(UUID(), @id_question7, TRUE, 'The method must have the same name and parameters.'),
+(UUID(), @id_question7, FALSE, 'Static methods can be overridden.'),
 
-(UUID(), @id_question8, FALSE, NULL, 'Constructors'),
-(UUID(), @id_question8, TRUE, NULL, 'Public methods'),
-(UUID(), @id_question8, FALSE, NULL, 'Private variables'),
-(UUID(), @id_question8, TRUE, NULL, 'Protected methods'),
-(UUID(), @id_question8, TRUE, NULL, 'Static methods'),
+(UUID(), @id_question8, FALSE, 'Constructors'),
+(UUID(), @id_question8, TRUE, 'Public methods'),
+(UUID(), @id_question8, FALSE, 'Private variables'),
+(UUID(), @id_question8, TRUE, 'Protected methods'),
 
-(UUID(), @id_question9, TRUE, NULL, 'True'),
+(UUID(), @id_question9, TRUE, NULL),
 
-(UUID(), @id_question10, FALSE, NULL, 'False');
+(UUID(), @id_question10, FALSE, NULL);
 
 INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
 (UUID(), @id_question11, TRUE, 'Facade'),
@@ -231,8 +229,7 @@ INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
 (UUID(), @id_question18, FALSE, 'It limits the number of object instances.'),
 (UUID(), @id_question18, FALSE, 'It provides a simplified interface to subsystems.'),
 
-(UUID(), @id_question19, TRUE, 'True'),
-(UUID(), @id_question20, FALSE, 'False');
+(UUID(), @id_question19, TRUE, NULL);
 
 INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
 (UUID(), @id_question21, TRUE, 'getElementById'),
@@ -269,8 +266,6 @@ INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
 (UUID(), @id_question28, FALSE, 'It returns all matching elements.'),
 (UUID(), @id_question28, FALSE, 'It can insert new elements into the DOM.'),
 
-(UUID(), @id_question29, TRUE, 'True'),
-(UUID(), @id_question29, FALSE, 'False'),
+(UUID(), @id_question29, TRUE, NULL),
 
-(UUID(), @id_question30, TRUE, 'True'),
-(UUID(), @id_question30, FALSE, 'False');
+(UUID(), @id_question30, TRUE, NULL);
