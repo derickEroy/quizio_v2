@@ -1,19 +1,23 @@
 package com.dak.controllers;
 
+import com.dak.bases.AbstractQuestionEventPublisher;
 import com.dak.models.QuestionModel;
 import com.dak.views.TrueOrFalseView;
+import org.jetbrains.annotations.NotNull;
 
-public class TrueOrFalseController {
-    private final QuestionModel model;
+import java.awt.event.ActionListener;
+
+public class TrueOrFalseController extends AbstractQuestionEventPublisher {
     private final TrueOrFalseView view;
 
-    public TrueOrFalseController(QuestionModel model, TrueOrFalseView view) {
-        this.model = model;
+    public TrueOrFalseController(QuestionModel model, @NotNull TrueOrFalseView view) {
+        super(model, null);
         this.view = view;
-    }
 
-    public QuestionModel getModel() {
-        return model;
+        ActionListener actionListener = createComponentActionListener();
+
+        view.getTrueButton().addActionListener(actionListener);
+        view.getFalseButton().addActionListener(actionListener);
     }
 
     public TrueOrFalseView getView() {

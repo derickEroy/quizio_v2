@@ -1,19 +1,18 @@
 package com.dak.controllers;
 
+import com.dak.bases.AbstractQuestionEventPublisher;
 import com.dak.models.QuestionModel;
 import com.dak.views.FillInTheBlankView;
+import org.jetbrains.annotations.NotNull;
 
-public class FillInTheBlankController {
-    private final QuestionModel model;
+public class FillInTheBlankController extends AbstractQuestionEventPublisher {
     private final FillInTheBlankView view;
 
-    public FillInTheBlankController(QuestionModel model, FillInTheBlankView view) {
-        this.model = model;
+    public FillInTheBlankController(QuestionModel model, @NotNull FillInTheBlankView view) {
+        super(model, null);
         this.view = view;
-    }
 
-    public QuestionModel getModel() {
-        return model;
+        view.getTextField().getDocument().addDocumentListener(createComponentDocumentListener());
     }
 
     public FillInTheBlankView getView() {

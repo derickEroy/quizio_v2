@@ -1,34 +1,43 @@
 package com.dak.controllers;
 
-import com.dak.events.subscribers.NewReleaseItemSubscriber;
+import com.dak.events.subscribers.QuestionInputSubscriber;
 import com.dak.events.subscribers.QuizNavigationSubscriber;
+import com.dak.models.OptionModel;
+import com.dak.models.QuestionModel;
 import com.dak.states.QuizNavigationState;
 import com.dak.states.QuizSessionState;
 import com.dak.views.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.List;
 
-public class PlayQuizPageController implements QuizNavigationSubscriber, NewReleaseItemSubscriber {
-    private final PlayQuizPageView view;
-    private final QuizSessionState state;
+public class PlayQuizPageController implements QuizNavigationSubscriber, QuestionInputSubscriber {
+    private final List<QuestionModel> questionModels;
+    private final PlayQuizPageView playQuizPageView;
+    private final QuizSessionState quizSessionState;
 
-    public PlayQuizPageController(PlayQuizPageView view, QuizSessionState state) {
-        this.view = view;
-        this.state = state;
+    public PlayQuizPageController(List<QuestionModel> questionModels, PlayQuizPageView playQuizPageView, QuizSessionState quizSessionState) {
+        this.questionModels = questionModels;
+        this.playQuizPageView = playQuizPageView;
+        this.quizSessionState = quizSessionState;
     }
 
-    public PlayQuizPageView getView() {
-        return view;
+    public List<QuestionModel> getQuestionModels() {
+        return questionModels;
     }
 
-    public QuizSessionState getState() {
-        return state;
+    public PlayQuizPageView getPlayQuizPageView() {
+        return playQuizPageView;
+    }
+
+    public QuizSessionState getQuizSessionState() {
+        return quizSessionState;
     }
 
     private void showCurrentPage(int currentPage) {
-        CardLayout cardLayout = (CardLayout) view.getCardPanel().getLayout();
-        cardLayout.show(view.getCardPanel(), String.valueOf(currentPage));
+        CardLayout cardLayout = (CardLayout) playQuizPageView.getCardPanel().getLayout();
+        cardLayout.show(playQuizPageView.getCardPanel(), String.valueOf(currentPage - 1));
     }
 
     @Override
@@ -42,7 +51,7 @@ public class PlayQuizPageController implements QuizNavigationSubscriber, NewRele
     }
 
     @Override
-    public void onPlay(String quizId) {
-        System.out.println(quizId);
+    public void onInput() {
+        System.out.println("Input!");
     }
 }

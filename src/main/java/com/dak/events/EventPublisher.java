@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class EventPublisher<TSubscriber extends EventSubscriber, TEvent extends Enum<TEvent>> {
-    protected final List<TSubscriber> subscribers = new ArrayList<>();
+    private final List<TSubscriber> subscribers = new ArrayList<>();
+
+    public List<TSubscriber> getSubscribers() {
+        return subscribers;
+    }
 
     public void addSubscriber(TSubscriber subscriber) {
         subscribers.add(subscriber);

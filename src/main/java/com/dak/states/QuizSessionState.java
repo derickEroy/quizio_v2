@@ -1,9 +1,11 @@
 package com.dak.states;
 
-public class QuizSessionState {
-    public Boolean[] correctAnswers;
+import com.dak.models.OptionModel;
+import com.dak.models.QuestionModel;
 
-    public QuizSessionState(int numberOfQuestions) {
-        this.correctAnswers = new Boolean[numberOfQuestions];
-    }
+import java.util.HashMap;
+import java.util.Map;
+
+public class QuizSessionState {
+    public Map<QuestionModel, OptionModel> answersMap = new HashMap<>();
 }

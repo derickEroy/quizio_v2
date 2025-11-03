@@ -1,7 +1,8 @@
 package com.dak.composers;
 
+import com.dak.bases.AbstractQuestionEventPublisher;
 import com.dak.constants.AppConstants;
-import com.dak.contracts.QuestionInputContract;
+import com.dak.bases.AbstractQuestionInputPanel;
 import com.dak.controllers.*;
 import com.dak.models.OptionModel;
 import com.dak.models.QuestionModel;
@@ -22,73 +23,70 @@ public class PlayQuizPageComposer {
         List<QuestionModel> questionModels = QuestionModel.findManyByQuizId(quizId);
 
         QuizNavigationState quizNavigationState = new QuizNavigationState(1, questionModels.size());
-
         QuizNavigationView quizNavigationView = new QuizNavigationView();
         QuizNavigationController quizNavigationController = new QuizNavigationController(quizNavigationView, quizNavigationState);
-
         PlayQuizPageViewModel playQuizPageViewModel = new PlayQuizPageViewModel(quizNavigationView, quizNavigationState);
 
         List<QuestionViewModel> questionViewModels = new ArrayList<>();
+        List<AbstractQuestionEventPublisher> questionControllers = new ArrayList<>();
 
         for (QuestionModel questionModel : questionModels) {
-            QuestionInputContract questionInputView;
+            AbstractQuestionInputPanel abstractQuestionInputPanel;
+            AbstractQuestionEventPublisher abstractQuestionEventPublisher;
 
             switch (questionModel.getType()) {
                 case QuestionModel.TYPE.FILL_IN_THE_BLANK -> {
                     FillInTheBlankView fillInTheBlankView = new FillInTheBlankView();
-                    new FillInTheBlankController(questionModel, fillInTheBlankView);
-
-                    questionInputView = fillInTheBlankView;
+                    abstractQuestionInputPanel = fillInTheBlankView;
+                    abstractQuestionEventPublisher = new FillInTheBlankController(questionModel, fillInTheBlankView);
                 }
                 case QuestionModel.TYPE.MULTIPLE_CHOICE -> {
                     List<OptionModel> optionModels = OptionModel.findManyByQuestionId(questionModel.getId());
-
-                    String[] optionTexts = optionModels
-                            .stream()
-                            .map(OptionModel::getText)
-                            .toArray(String[]::new);
+                    String[] optionTexts = optionModels.stream().map(OptionModel::getText).toArray(String[]::new);
 
                     MultipleChoiceViewModel multipleChoiceViewModel = new MultipleChoiceViewModel(optionTexts[0], optionTexts[1], optionTexts[2], optionTexts[3]);
                     MultipleChoiceView multipleChoiceView = new MultipleChoiceView(multipleChoiceViewModel);
-                    new MultipleChoiceController(questionModel, multipleChoiceView);
 
-                    questionInputView = multipleChoiceView;
+                    abstractQuestionInputPanel = multipleChoiceView;
+                    abstractQuestionEventPublisher = new MultipleChoiceController(questionModel, optionModels, multipleChoiceView);
                 }
                 case QuestionModel.TYPE.MULTI_SELECT -> {
                     List<OptionModel> optionModels = OptionModel.findManyByQuestionId(questionModel.getId());
-
-                    String[] optionTexts = optionModels
-                            .stream()
-                            .map(OptionModel::getText)
-                            .toArray(String[]::new);
+                    String[] optionTexts = optionModels.stream().map(OptionModel::getText).toArray(String[]::new);
 
                     MultiSelectViewModel multiSelectViewModel = new MultiSelectViewModel(optionTexts[0], optionTexts[1], optionTexts[2], optionTexts[3]);
                     MultiSelectView multiSelectView = new MultiSelectView(multiSelectViewModel);
-                    new MultiSelectController(questionModel, multiSelectView);
 
-                    questionInputView = multiSelectView;
+                    abstractQuestionInputPanel = multiSelectView;
+                    abstractQuestionEventPublisher = new MultiSelectController(questionModel, optionModels, multiSelectView);
                 }
                 case QuestionModel.TYPE.TRUE_OR_FALSE -> {
                     TrueOrFalseView trueOrFalseView = new TrueOrFalseView();
-                    new TrueOrFalseController(questionModel, trueOrFalseView);
-
-                    questionInputView = trueOrFalseView;
+                    abstractQuestionInputPanel = trueOrFalseView;
+                    abstractQuestionEventPublisher = new TrueOrFalseController(questionModel, trueOrFalseView);
                 }
                 default -> throw new IllegalArgumentException("Unhandled question model type: " + questionModel.getType());
             }
 
-            // TODO: Change underline length to answer length.
             String text = questionModel.getText().replace(AppConstants.QUESTION_BLANK_DELIMITER, "__________");
-
-            QuestionViewModel questionViewModel = new QuestionViewModel(text, questionInputView);
+            QuestionViewModel questionViewModel = new QuestionViewModel(text, abstractQuestionInputPanel);
             questionViewModels.add(questionViewModel);
+            questionControllers.add(abstractQuestionEventPublisher);
         }
 
-        PlayQuizPageView playQuizPageView = new PlayQuizPageView(playQuizPageViewModel, questionViewModels.toArray(QuestionViewModel[]::new));
-        QuizSessionState quizSessionState = new QuizSessionState(questionViewModels.size());
-        PlayQuizPageController playQuizPageController = new PlayQuizPageController(playQuizPageView, quizSessionState);
+        PlayQuizPageView playQuizPageView = new PlayQuizPageView(
+                playQuizPageViewModel,
+                questionViewModels.toArray(QuestionViewModel[]::new)
+        );
+
+        QuizSessionState quizSessionState = new QuizSessionState();
+        PlayQuizPageController playQuizPageController = new PlayQuizPageController(questionModels, playQuizPageView, quizSessionState);
 
         quizNavigationController.addSubscriber(playQuizPageController);
+
+        for (AbstractQuestionEventPublisher controller : questionControllers) {
+            controller.addSubscriber(playQuizPageController);
+        }
 
         return playQuizPageView;
     }

@@ -1,6 +1,6 @@
 package com.dak.views;
 
-import com.dak.contracts.QuestionInputContract;
+import com.dak.bases.AbstractQuestionInputPanel;
 import com.dak.views.utils.ColorSet;
 import com.dak.views.utils.SizeSet;
 import com.dak.views.viewModels.MultipleChoiceViewModel;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 
-public class MultipleChoiceView extends QuestionInputContract {
+public class MultipleChoiceView extends AbstractQuestionInputPanel {
     private final ButtonGroup buttonGroup = new ButtonGroup();
 
     private final JRadioButton choiceOne;

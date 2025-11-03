@@ -1,6 +1,6 @@
 package com.dak.views;
 
-import com.dak.contracts.QuestionInputContract;
+import com.dak.bases.AbstractQuestionInputPanel;
 import com.dak.views.utils.ColorSet;
 import com.dak.views.utils.SizeSet;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 
-public class FillInTheBlankView extends QuestionInputContract {
+public class FillInTheBlankView extends AbstractQuestionInputPanel {
     private final JTextField textField;
 
     public FillInTheBlankView() {
