@@ -156,9 +156,9 @@ INSERT INTO `question`(`id`, `quiz_id`, `type`, `text`) VALUES
 -- Option
 
 INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
-(UUID(), @id_question1, TRUE, 'final'),
+(UUID(), @id_question1, NULL, 'final'),
 
-(UUID(), @id_question2, TRUE, '@Override'),
+(UUID(), @id_question2, NULL, '@Override'),
 
 (UUID(), @id_question3, FALSE, 'Inheritance'),
 (UUID(), @id_question3, FALSE, 'Encapsulation'),
@@ -195,9 +195,9 @@ INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
 (UUID(), @id_question10, FALSE, NULL);
 
 INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
-(UUID(), @id_question11, TRUE, 'Facade'),
+(UUID(), @id_question11, NULL, 'Facade'),
 
-(UUID(), @id_question12, TRUE, 'Singleton'),
+(UUID(), @id_question12, NULL, 'Singleton'),
 
 (UUID(), @id_question13, TRUE, 'Factory Method'),
 (UUID(), @id_question13, FALSE, 'Observer'),
@@ -232,9 +232,9 @@ INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
 (UUID(), @id_question19, TRUE, NULL);
 
 INSERT INTO `option`(`id`, `question_id`, `is_correct`, `text`) VALUES
-(UUID(), @id_question21, TRUE, 'getElementById'),
+(UUID(), @id_question21, NULL, 'getElementById'),
 
-(UUID(), @id_question22, TRUE, 'textContent'),
+(UUID(), @id_question22, NULL, 'textContent'),
 
 (UUID(), @id_question23, TRUE, 'document.createElement'),
 (UUID(), @id_question23, FALSE, 'document.appendChild'),
