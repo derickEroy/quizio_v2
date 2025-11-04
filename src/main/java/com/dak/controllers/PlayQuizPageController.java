@@ -19,22 +19,27 @@ public class PlayQuizPageController implements QuizNavigationSubscriber, Questio
     private final PlayQuizPageView view;
     private final QuizSessionState state;
 
-    public PlayQuizPageController(PlayQuizPageView view, QuizSessionState state) {
-        this.view = view;
-        this.state = state;
+    public PlayQuizPageController(List<QuestionModel> questionModels, PlayQuizPageView playQuizPageView, QuizSessionState quizSessionState) {
+        this.questionModels = questionModels;
+        this.playQuizPageView = playQuizPageView;
+        this.quizSessionState = quizSessionState;
     }
 
-    public PlayQuizPageView getView() {
-        return view;
+    public List<QuestionModel> getQuestionModels() {
+        return questionModels;
     }
 
-    public QuizSessionState getState() {
-        return state;
+    public PlayQuizPageView getPlayQuizPageView() {
+        return playQuizPageView;
+    }
+
+    public QuizSessionState getQuizSessionState() {
+        return quizSessionState;
     }
 
     private void showCurrentPage(int currentPage) {
-        CardLayout cardLayout = (CardLayout) view.getCardPanel().getLayout();
-        cardLayout.show(view.getCardPanel(), String.valueOf(currentPage));
+        CardLayout cardLayout = (CardLayout) playQuizPageView.getCardPanel().getLayout();
+        cardLayout.show(playQuizPageView.getCardPanel(), String.valueOf(currentPage - 1));
     }
 
     @Override
