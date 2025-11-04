@@ -29,7 +29,7 @@ public class Database {
      * <p>Note: For best practice, consider integrating this functionality as a separate
      * console command instead of invoking it directly within the application code.</p>
      */
-    private static void migrate() {
+    public static void migrate() {
         Flyway flyway = Flyway.configure()
             .dataSource(
                 EnvironmentVariable.DATABASE_URL,

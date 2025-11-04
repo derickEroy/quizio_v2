@@ -1,6 +1,6 @@
 package com.dak.controllers;
 
-import com.dak.events.subscribers.QuestionInputSubscriber;
+import com.dak.events.subscribers.QuestionSubscriber;
 import com.dak.events.subscribers.QuizNavigationSubscriber;
 import com.dak.models.OptionModel;
 import com.dak.models.QuestionModel;
@@ -12,10 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.util.List;
 
-public class PlayQuizPageController implements QuizNavigationSubscriber, QuestionInputSubscriber {
-    private final List<QuestionModel> questionModels;
-    private final PlayQuizPageView playQuizPageView;
-    private final QuizSessionState quizSessionState;
+public class PlayQuizPageController implements QuizNavigationSubscriber, QuestionSubscriber {
+    private final PlayQuizPageView view;
+    private final QuizSessionState state;
 
     public PlayQuizPageController(List<QuestionModel> questionModels, PlayQuizPageView playQuizPageView, QuizSessionState quizSessionState) {
         this.questionModels = questionModels;
@@ -51,7 +50,7 @@ public class PlayQuizPageController implements QuizNavigationSubscriber, Questio
     }
 
     @Override
-    public void onInput() {
-        System.out.println("Input!");
+    public void onInput(String answer) {
+        System.out.println(answer);
     }
 }

@@ -1,6 +1,6 @@
 package com.dak.views;
 
-import com.dak.bases.AbstractQuestionInputPanel;
+import com.dak.bases.BaseQuestionView;
 import com.dak.views.utils.ColorSet;
 import com.dak.views.utils.SizeSet;
 import com.dak.views.viewModels.MultiSelectViewModel;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 
-public class MultiSelectView extends AbstractQuestionInputPanel {
+public class MultiSelectView extends BaseQuestionView {
     private final JCheckBox optionOne;
     private final JCheckBox optionTwo;
     private final JCheckBox optionThree;

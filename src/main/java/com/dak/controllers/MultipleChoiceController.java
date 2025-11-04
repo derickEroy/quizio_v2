@@ -1,20 +1,15 @@
 package com.dak.controllers;
 
-import com.dak.bases.AbstractQuestionEventPublisher;
-import com.dak.models.OptionModel;
+import com.dak.bases.BaseQuestionController;
 import com.dak.models.QuestionModel;
 import com.dak.views.MultipleChoiceView;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.ActionListener;
-import java.util.List;
 
-public class MultipleChoiceController extends AbstractQuestionEventPublisher {
-    private final MultipleChoiceView view;
-
-    public MultipleChoiceController(QuestionModel model, List<OptionModel> optionModels, @NotNull MultipleChoiceView view) {
-        super(model, optionModels);
-        this.view = view;
+public class MultipleChoiceController extends BaseQuestionController<MultipleChoiceView> {
+    public MultipleChoiceController(QuestionModel model, MultipleChoiceView view) {
+        super(model, view);
 
         ActionListener actionListener = createComponentActionListener();
 
@@ -22,9 +17,5 @@ public class MultipleChoiceController extends AbstractQuestionEventPublisher {
         view.getChoiceTwo().addActionListener(actionListener);
         view.getChoiceThree().addActionListener(actionListener);
         view.getChoiceFour().addActionListener(actionListener);
-    }
-
-    public MultipleChoiceView getView() {
-        return view;
     }
 }

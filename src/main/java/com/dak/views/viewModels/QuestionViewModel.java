@@ -1,8 +1,8 @@
 package com.dak.views.viewModels;
 
-import com.dak.bases.AbstractQuestionInputPanel;
+import com.dak.bases.BaseQuestionView;
 
 public record QuestionViewModel(
     String text,
-    AbstractQuestionInputPanel questionInputView
+    BaseQuestionView questionView
 ) {}
