@@ -1,6 +1,7 @@
 package com.dak.views;
 
 import com.dak.bases.BaseQuestionView;
+import com.dak.models.OptionModel;
 import com.dak.views.utils.ColorSet;
 import com.dak.views.utils.SizeSet;
 import com.dak.views.viewModels.MultiSelectViewModel;
@@ -8,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.Map;
 
 public class MultiSelectView extends BaseQuestionView {
     private final JCheckBox optionOne;
@@ -62,7 +65,7 @@ public class MultiSelectView extends BaseQuestionView {
         panel.setBorder(BorderFactory.createLineBorder(ColorSet.getPrimaryBorder()));
         panel.add(option);
 
-        option.addChangeListener(e -> {
+        option.addItemListener(_ -> {
             if (option.isSelected()) {
                 panel.setOpaque(true);
                 panel.setBackground(ColorSet.getSelectedOptionBackground());
@@ -74,5 +77,49 @@ public class MultiSelectView extends BaseQuestionView {
         });
 
         return panel;
+    }
+
+    @Override
+    public void disableInput() {
+        disableButtonsInput(List.of(optionOne, optionTwo, optionThree, optionFour));
+    }
+
+    @Override
+    public void displayAnswerResult(List<OptionModel> options, Map<OptionModel, Boolean> resultMap) {
+        List<JCheckBox> checkboxes = List.of(optionOne, optionTwo, optionThree, optionFour);
+
+        if (resultMap == null) {
+            List<OptionModel> correctOptions = options.stream().filter(OptionModel::isCorrect).toList();
+
+            for (OptionModel optionModel : correctOptions) {
+                JCheckBox targetCheckbox = checkboxes
+                    .stream()
+                    .filter(c -> c.getText().equals(optionModel.getText()))
+                    .findFirst()
+                    .orElse(null);
+
+                assert targetCheckbox != null;
+                targetCheckbox.setOpaque(true);
+                targetCheckbox.setBackground(ColorSet.getIncorrectOptionBackground());
+                ((JPanel) targetCheckbox.getParent()).setBorder(BorderFactory.createLineBorder(ColorSet.getIncorrectOptionAccent()));
+            }
+
+            return;
+        }
+
+        for (Map.Entry<OptionModel, Boolean> entry : resultMap.entrySet()) {
+            OptionModel key = entry.getKey();
+            Boolean value = entry.getValue();
+
+            JCheckBox targetCheckbox = checkboxes.stream().filter(c -> c.getText().equals(key.getText())).findFirst().orElse(null);
+
+            Color backgroundColor = value ? ColorSet.getCorrectOptionBackground() : ColorSet.getIncorrectOptionBackground();
+            Color borderColor = value ? ColorSet.getCorrectOptionAccent() : ColorSet.getIncorrectOptionAccent();
+
+            assert targetCheckbox != null;
+            targetCheckbox.setOpaque(true);
+            targetCheckbox.setBackground(backgroundColor);
+            ((JPanel) targetCheckbox.getParent()).setBorder(BorderFactory.createLineBorder(borderColor));
+        }
     }
 }

@@ -3,7 +3,7 @@ package com.dak.bases;
 import com.dak.events.EventPublisher;
 import com.dak.events.enums.QuestionEvent;
 import com.dak.events.subscribers.QuestionSubscriber;
-import com.dak.events.subscribers.QuizNavigationSubscriber;
+import com.dak.models.OptionModel;
 import com.dak.models.QuestionModel;
 import com.dak.views.MultiSelectView;
 import org.jetbrains.annotations.NotNull;
@@ -16,16 +16,27 @@ import javax.swing.text.Document;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BaseQuestionController<TView extends BaseQuestionView> extends EventPublisher<QuestionSubscriber, QuestionEvent> {
     private final QuestionModel model;
+    private final List<OptionModel> options;
     private final TView view;
 
     protected String answer;
 
-    public BaseQuestionController(QuestionModel model, TView view) {
+    public BaseQuestionController(QuestionModel model, List<OptionModel> options, TView view) {
         this.model = model;
+        this.options = options;
         this.view = view;
+    }
+
+    public QuestionModel getModel() {
+        return model;
+    }
+
+    public void showAnswerResult(Map<OptionModel, Boolean> resultMap) {
+        view.handleAnswerResult(options, resultMap);
     }
 
     @Override

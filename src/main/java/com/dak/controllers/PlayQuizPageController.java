@@ -1,5 +1,6 @@
 package com.dak.controllers;
 
+import com.dak.bases.BaseQuestionController;
 import com.dak.enums.QuestionType;
 import com.dak.events.subscribers.QuestionSubscriber;
 import com.dak.events.subscribers.QuizNavigationSubscriber;
@@ -18,18 +19,12 @@ import java.util.stream.Collectors;
 public class PlayQuizPageController implements QuizNavigationSubscriber, QuestionSubscriber {
     private final PlayQuizPageView view;
     private final QuizSessionState state;
+    private final List<BaseQuestionController<?>> questionControllers;
 
-    public PlayQuizPageController(PlayQuizPageView view, QuizSessionState state) {
+    public PlayQuizPageController(PlayQuizPageView view, QuizSessionState state, List<BaseQuestionController<?>> questionControllers) {
         this.view = view;
         this.state = state;
-    }
-
-    public PlayQuizPageView getView() {
-        return view;
-    }
-
-    public QuizSessionState getState() {
-        return state;
+        this.questionControllers = questionControllers;
     }
 
     private void showCurrentPage(int currentPage) {
@@ -49,7 +44,9 @@ public class PlayQuizPageController implements QuizNavigationSubscriber, Questio
 
     @Override
     public void onFinish() {
-        System.out.println("Reacted to finish event!");
+        for (BaseQuestionController<?> questionController : questionControllers) {
+            questionController.showAnswerResult(state.answersMap.get(questionController.getModel()));
+        }
     }
 
     @Override

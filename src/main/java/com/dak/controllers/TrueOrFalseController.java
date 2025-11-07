@@ -1,15 +1,16 @@
 package com.dak.controllers;
 
 import com.dak.bases.BaseQuestionController;
+import com.dak.models.OptionModel;
 import com.dak.models.QuestionModel;
 import com.dak.views.TrueOrFalseView;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class TrueOrFalseController extends BaseQuestionController<TrueOrFalseView> {
-    public TrueOrFalseController(QuestionModel model, TrueOrFalseView view) {
-        super(model, view);
+    public TrueOrFalseController(QuestionModel model, List<OptionModel> options, TrueOrFalseView view) {
+        super(model, options, view);
 
         ActionListener actionListener = createComponentActionListener();
 

@@ -43,7 +43,7 @@ public class PlayQuizPageComposer {
                     OptionModel optionModel = OptionModel.findOneByQuestionId(questionModel.getId());
 
                     FillInTheBlankView fillInTheBlankView = new FillInTheBlankView();
-                    FillInTheBlankController fillInTheBlankController = new FillInTheBlankController(questionModel, fillInTheBlankView);
+                    FillInTheBlankController fillInTheBlankController = new FillInTheBlankController(questionModel, Collections.singletonList(optionModel), fillInTheBlankView);
 
                     questionView = fillInTheBlankView;
                     questionController = fillInTheBlankController;
@@ -60,7 +60,7 @@ public class PlayQuizPageComposer {
 
                     MultipleChoiceViewModel multipleChoiceViewModel = new MultipleChoiceViewModel(optionTexts[0], optionTexts[1], optionTexts[2], optionTexts[3]);
                     MultipleChoiceView multipleChoiceView = new MultipleChoiceView(multipleChoiceViewModel);
-                    MultipleChoiceController multipleChoiceController = new MultipleChoiceController(questionModel, multipleChoiceView);
+                    MultipleChoiceController multipleChoiceController = new MultipleChoiceController(questionModel, optionModels, multipleChoiceView);
 
                     questionView = multipleChoiceView;
                     questionController = multipleChoiceController;
@@ -77,7 +77,7 @@ public class PlayQuizPageComposer {
 
                     MultiSelectViewModel multiSelectViewModel = new MultiSelectViewModel(optionTexts[0], optionTexts[1], optionTexts[2], optionTexts[3]);
                     MultiSelectView multiSelectView = new MultiSelectView(multiSelectViewModel);
-                    MultiSelectController multiSelectController = new MultiSelectController(questionModel, multiSelectView);
+                    MultiSelectController multiSelectController = new MultiSelectController(questionModel, optionModels, multiSelectView);
 
                     questionView = multiSelectView;
                     questionController = multiSelectController;
@@ -88,7 +88,7 @@ public class PlayQuizPageComposer {
                     OptionModel optionModel = OptionModel.findOneByQuestionId(questionModel.getId());
 
                     TrueOrFalseView trueOrFalseView = new TrueOrFalseView();
-                    TrueOrFalseController trueOrFalseController = new TrueOrFalseController(questionModel, trueOrFalseView);
+                    TrueOrFalseController trueOrFalseController = new TrueOrFalseController(questionModel, Collections.singletonList(optionModel), trueOrFalseView);
 
                     questionView = trueOrFalseView;
                     questionController = trueOrFalseController;
@@ -109,7 +109,7 @@ public class PlayQuizPageComposer {
 
         PlayQuizPageView playQuizPageView = new PlayQuizPageView(playQuizPageViewModel, questionViewModels.toArray(QuestionViewModel[]::new));
         QuizSessionState quizSessionState = new QuizSessionState(questionOptionsMap);
-        PlayQuizPageController playQuizPageController = new PlayQuizPageController(playQuizPageView, quizSessionState);
+        PlayQuizPageController playQuizPageController = new PlayQuizPageController(playQuizPageView, quizSessionState, questionControllers);
 
         quizNavigationController.addSubscriber(playQuizPageController);
 
