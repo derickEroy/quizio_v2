@@ -31,6 +31,7 @@ public class FillInTheBlankView extends BaseQuestionView {
         JTextField textField = new JTextField();
         textField.setBackground(ColorSet.getSecondaryBackground());
         textField.setBorder(BorderFactory.createEmptyBorder(SizeSet._3XS, SizeSet._3XS, SizeSet._3XS, SizeSet._3XS));
+        textField.setFont(textField.getFont().deriveFont(Font.BOLD));
 
         return textField;
     }
