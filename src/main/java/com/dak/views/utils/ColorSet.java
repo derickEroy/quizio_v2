@@ -29,7 +29,7 @@ public class ColorSet {
         secondaryBackground = Color.decode("#F3F3F3");
         primaryForeground = Color.decode("#353535");
         secondaryForeground = Color.decode("#FFFFFF");
-        placeholderForeground = Color.decode("#353535");
+        placeholderForeground = Color.decode("#7a7a7a");
         primaryBorder = Color.decode("#B2B2B2");
         primaryButton = Color.decode("#1B98FF");
         ghostButton = Color.decode("#000000");
@@ -47,7 +47,7 @@ public class ColorSet {
         secondaryBackground = Color.decode("#353535");
         primaryForeground = Color.decode("#FFFFFF");
         secondaryForeground = Color.decode("#FFFFFF");
-        placeholderForeground = Color.decode("#353535");
+        placeholderForeground = Color.decode("#7a7a7a");
         primaryBorder = Color.decode("#FFFFFF");
         primaryButton = Color.decode("#1B98FF");
         ghostButton = Color.decode("#000000");

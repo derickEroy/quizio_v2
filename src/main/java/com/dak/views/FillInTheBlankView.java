@@ -8,11 +8,15 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.List;
 import java.util.Map;
 
 public class FillInTheBlankView extends BaseQuestionView {
     private final JTextField textField;
+
+    private final String placeholderText = "Type your answer...";
 
     public FillInTheBlankView() {
         setOpaque(false);
@@ -28,10 +32,28 @@ public class FillInTheBlankView extends BaseQuestionView {
     }
 
     private @NotNull JTextField createTextField() {
-        JTextField textField = new JTextField();
+        JTextField textField = new JTextField(placeholderText);
         textField.setBackground(ColorSet.getSecondaryBackground());
         textField.setBorder(BorderFactory.createEmptyBorder(SizeSet._3XS, SizeSet._3XS, SizeSet._3XS, SizeSet._3XS));
-        textField.setFont(textField.getFont().deriveFont(Font.BOLD));
+        textField.setForeground(ColorSet.getPlaceholderForeground());
+
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textField.getText().equals(placeholderText)) {
+                    textField.setText("");
+                    textField.setForeground(ColorSet.getPrimaryForeground());
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholderText);
+                    textField.setForeground(ColorSet.getPlaceholderForeground());
+                }
+            }
+        });
 
         return textField;
     }
