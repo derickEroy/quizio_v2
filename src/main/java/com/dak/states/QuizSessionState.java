@@ -37,7 +37,11 @@ public class QuizSessionState extends EventPublisher<QuizSessionSubscriber, Quiz
                 answersMap.put(model, Map.of(correctOption, correctOption.getText().equals(answer)));
             }
             case MULTIPLE_CHOICE -> {
-                OptionModel correctOption = optionModels.stream().filter(OptionModel::isCorrect).findFirst().orElse(null);
+                OptionModel correctOption = optionModels
+                        .stream()
+                        .filter(OptionModel::isCorrect)
+                        .findFirst()
+                        .orElse(null);
 
                 if (correctOption == null) {
                     throw new IllegalStateException(QuestionType.MULTIPLE_CHOICE + " does not have an answer");
@@ -46,14 +50,17 @@ public class QuizSessionState extends EventPublisher<QuizSessionSubscriber, Quiz
                 answersMap.put(model, Map.of(correctOption, correctOption.getText().equals(answer)));
             }
             case MULTI_SELECT -> {
-                List<OptionModel> correctOptions = optionModels.stream().filter(OptionModel::isCorrect).toList();
+                List<OptionModel> correctOptions = optionModels
+                        .stream()
+                        .filter(OptionModel::isCorrect)
+                        .toList();
 
                 if (correctOptions.isEmpty()) {
                     throw new IllegalStateException(QuestionType.MULTI_SELECT + " does not have an answer");
                 }
 
-                List<String> answers = Arrays.stream(answer.substring(1, answer.length() - 1)
-                                .split(", "))
+                List<String> answers = Arrays
+                        .stream(answer.substring(1, answer.length() - 1).split(", "))
                         .map(String::trim)
                         .toList();
 
