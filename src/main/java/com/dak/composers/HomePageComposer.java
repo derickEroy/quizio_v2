@@ -31,7 +31,6 @@ public class HomePageComposer {
         }
 
         HomePageViewModel homePageViewModel = new HomePageViewModel(createCategorySection(), newReleaseSectionView);
-
         return new HomePageView(homePageViewModel);
     }
 
@@ -39,36 +38,31 @@ public class HomePageComposer {
     public static @NotNull CategorySectionView createCategorySection() {
         SectionHeaderViewModel sectionHeaderViewModel = new SectionHeaderViewModel("Categories");
 
-        List<CategoryItemView> categoryItemViews = new ArrayList<>();
-        List<CategoryModel> categoryModels = CategoryModel.findAll();
-
-        for (CategoryModel categoryModel : categoryModels) {
-            CategoryItemViewModel categoryItemViewModel = new CategoryItemViewModel(ImageLoader.load(categoryModel.getImage()));
-            CategoryItemView categoryItemView = new CategoryItemView(categoryItemViewModel);
-            new CategoryItemController(categoryModel, categoryItemView);
-
-            categoryItemViews.add(categoryItemView);
-        }
+        List<CategoryItemView> categoryItemViews = CategoryModel
+                .findAll()
+                .stream()
+                .map(model -> {
+                    CategoryItemViewModel viewModel = new CategoryItemViewModel(ImageLoader.load(model.getImage()));
+                    CategoryItemView view = new CategoryItemView(viewModel);
+                    new CategoryItemController(model, view);
+                    return view;
+                })
+                .toList();
 
         CategorySectionViewModel categorySectionViewModel = new CategorySectionViewModel(categoryItemViews.toArray(CategoryItemView[]::new));
-
         return new CategorySectionView(sectionHeaderViewModel, categorySectionViewModel);
     }
 
     public static @NotNull NewReleaseSectionView newReleaseSection() throws SQLException {
         List<QuizModel> quizModels = QuizModel.findAll();
-        HashMap<String, List<String>> hashMap = new HashMap<>();
+        HashMap<String, List<String>> quizCategoryImagesMap = new HashMap<>();
 
         try (Connection conn = Database.getConnection()) {
-            String tempTableSql = "CREATE TEMPORARY TABLE temp_quiz_id (quiz_id CHAR(36));";
-
             try (Statement stmt = conn.createStatement()) {
-                stmt.executeUpdate(tempTableSql);
+                stmt.executeUpdate("CREATE TEMPORARY TABLE temp_quiz_id (quiz_id CHAR(36));");
             }
 
-            String insertQuizSql = "INSERT INTO temp_quiz_id (quiz_id) VALUES (?)";
-
-            try (PreparedStatement ps = conn.prepareStatement(insertQuizSql)) {
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO temp_quiz_id (quiz_id) VALUES (?)")) {
                 for (QuizModel quizModel : quizModels) {
                     ps.setString(1, quizModel.getId().toString());
                     ps.addBatch();
@@ -79,9 +73,7 @@ public class HomePageComposer {
 
             String querySql = String.format(
                     """
-                    SELECT
-                        tqi.quiz_id,
-                        c.%s
+                    SELECT tqi.quiz_id, c.%s
                     FROM temp_quiz_id tqi
                     LEFT JOIN %s qc ON qc.%s = tqi.quiz_id
                     LEFT JOIN %s c ON c.%s = qc.%s;
@@ -99,35 +91,30 @@ public class HomePageComposer {
                 while (rs.next()) {
                     String quizId = rs.getString("quiz_id");
                     String image = rs.getString(CategoryTable.IMAGE);
-
-                    hashMap.computeIfAbsent(quizId, (k) -> new ArrayList<>()).add(image);
+                    quizCategoryImagesMap.computeIfAbsent(quizId, (_) -> new ArrayList<>()).add(image);
                 }
             }
         }
 
-        SectionHeaderViewModel sectionHeaderViewModel = new SectionHeaderViewModel("New Release");
-
+        PlayQuizPageControllerMediator playQuizPageControllerMediator = new PlayQuizPageControllerMediator();
         List<NewReleaseItemView> newReleaseItemViews = new ArrayList<>();
 
-        PlayQuizPageControllerMediator playQuizPageControllerMediator = new PlayQuizPageControllerMediator();
-
-        for (QuizModel quizModel : quizModels) {
+        quizModels.forEach(model -> {
             NewReleaseItemViewModel newReleaseItemViewModel = new NewReleaseItemViewModel(
-                    quizModel.getTitle(),
-                    quizModel.getCreator(),
-                    hashMap.get(quizModel.getId().toString()).toArray(String[]::new)
+                    model.getTitle(),
+                    model.getCreator(),
+                    quizCategoryImagesMap.get(model.getId().toString()).toArray(String[]::new)
             );
 
             NewReleaseItemView newReleaseItemView = new NewReleaseItemView(newReleaseItemViewModel);
-            NewReleaseItemController newReleaseItemController = new NewReleaseItemController(quizModel, newReleaseItemView);
+            NewReleaseItemController newReleaseItemController = new NewReleaseItemController(model, newReleaseItemView);
 
             newReleaseItemController.addSubscriber(playQuizPageControllerMediator);
-
             newReleaseItemViews.add(newReleaseItemView);
-        }
+        });
 
+        SectionHeaderViewModel sectionHeaderViewModel = new SectionHeaderViewModel("New Release");
         NewReleaseSectionViewModel newReleaseSectionViewModel = new NewReleaseSectionViewModel(newReleaseItemViews.toArray(NewReleaseItemView[]::new));
-
         return new NewReleaseSectionView(sectionHeaderViewModel, newReleaseSectionViewModel);
     }
 }
