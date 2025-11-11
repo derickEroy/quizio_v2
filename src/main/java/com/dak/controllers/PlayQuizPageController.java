@@ -6,7 +6,6 @@ import com.dak.views.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.*;
 
 public class PlayQuizPageController implements QuizNavigationSubscriber {
     private final PlayQuizPageView view;
