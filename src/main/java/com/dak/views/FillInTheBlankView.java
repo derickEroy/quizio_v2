@@ -77,6 +77,10 @@ public class FillInTheBlankView extends BaseQuestionView {
     @Override
     public void displayAnswerResult(List<OptionModel> options, Map<OptionModel, Boolean> resultMap) {
         if (resultMap == null) {
+            if (textField.getText().equals(placeholderText)) {
+                textField.setText("");
+            }
+
             displayTextFieldResult(false);
             return;
         }
