@@ -1,5 +1,5 @@
 package com.dak.events.enums;
 
-public enum NewReleaseItemEvent {
+public enum QuizItemEvent {
     PLAY
 }

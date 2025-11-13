@@ -1,19 +1,19 @@
 package com.dak.controllers;
 
 import com.dak.events.EventPublisher;
-import com.dak.events.enums.NewReleaseItemEvent;
-import com.dak.events.subscribers.NewReleaseItemSubscriber;
+import com.dak.events.enums.QuizItemEvent;
+import com.dak.events.subscribers.QuizItemSubscriber;
 import com.dak.models.QuizModel;
-import com.dak.views.NewReleaseItemView;
+import com.dak.views.QuizItemView;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.ActionListener;
 
-public class NewReleaseItemController extends EventPublisher<NewReleaseItemSubscriber, NewReleaseItemEvent> {
+public class QuizItemController extends EventPublisher<QuizItemSubscriber, QuizItemEvent> {
     private final QuizModel model;
-    private final NewReleaseItemView view;
+    private final QuizItemView view;
 
-    public NewReleaseItemController(QuizModel model, @NotNull NewReleaseItemView view) {
+    public QuizItemController(QuizModel model, @NotNull QuizItemView view) {
         this.model = model;
         this.view = view;
 
@@ -24,19 +24,17 @@ public class NewReleaseItemController extends EventPublisher<NewReleaseItemSubsc
         return model;
     }
 
-    public NewReleaseItemView getView() {
+    public QuizItemView getView() {
         return view;
     }
 
     private @NotNull ActionListener createPlayButtonActionListener() {
-        return (e) -> {
-            notifySubscribers(NewReleaseItemEvent.PLAY);
-        };
+        return (_) -> notifySubscribers(QuizItemEvent.PLAY);
     }
 
     @Override
-    protected void notifyHandler(NewReleaseItemSubscriber subscriber, @NotNull NewReleaseItemEvent event) {
-        if (event == NewReleaseItemEvent.PLAY) {
+    protected void notifyHandler(QuizItemSubscriber subscriber, @NotNull QuizItemEvent event) {
+        if (event == QuizItemEvent.PLAY) {
             subscriber.onPlay(model.getId().toString());
         } else {
             throw new IllegalArgumentException("Unhandled event case: " + event);

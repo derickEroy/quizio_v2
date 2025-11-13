@@ -3,19 +3,19 @@ package com.dak.views;
 import com.dak.views.utils.ColorSet;
 import com.dak.views.utils.ImageLoader;
 import com.dak.views.utils.SizeSet;
-import com.dak.views.viewModels.NewReleaseItemViewModel;
+import com.dak.views.viewModels.QuizItemViewModel;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class NewReleaseItemView extends JPanel {
-    private final NewReleaseItemViewModel viewModel;
+public class QuizItemView extends JPanel {
+    private final QuizItemViewModel viewModel;
 
     private final JButton button;
 
-    public NewReleaseItemView(@NotNull NewReleaseItemViewModel viewModel) {
+    public QuizItemView(QuizItemViewModel viewModel) {
         this.viewModel = viewModel;
 
         setLayout(new BorderLayout());

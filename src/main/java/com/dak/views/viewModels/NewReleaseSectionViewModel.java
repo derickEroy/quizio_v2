@@ -1,5 +1,5 @@
 package com.dak.views.viewModels;
 
-import com.dak.views.NewReleaseItemView;
+import com.dak.views.QuizGridView;
 
-public record NewReleaseSectionViewModel(NewReleaseItemView[] newReleaseCardViews) {}
+public record NewReleaseSectionViewModel(QuizGridView quizGridView) {}

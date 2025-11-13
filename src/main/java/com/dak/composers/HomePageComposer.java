@@ -1,7 +1,7 @@
 package com.dak.composers;
 
 import com.dak.controllers.CategoryItemController;
-import com.dak.controllers.NewReleaseItemController;
+import com.dak.controllers.QuizItemController;
 import com.dak.db.Database;
 import com.dak.db.tables.CategoryTable;
 import com.dak.db.tables.QuizCategoryTable;
@@ -97,24 +97,27 @@ public class HomePageComposer {
         }
 
         PlayQuizPageControllerMediator playQuizPageControllerMediator = new PlayQuizPageControllerMediator();
-        List<NewReleaseItemView> newReleaseItemViews = new ArrayList<>();
+        List<QuizItemView> quizItemViews = new ArrayList<>();
 
         quizModels.forEach(model -> {
-            NewReleaseItemViewModel newReleaseItemViewModel = new NewReleaseItemViewModel(
+            QuizItemViewModel quizItemViewModel = new QuizItemViewModel(
                     model.getTitle(),
                     model.getCreator(),
                     quizCategoryImagesMap.get(model.getId().toString()).toArray(String[]::new)
             );
 
-            NewReleaseItemView newReleaseItemView = new NewReleaseItemView(newReleaseItemViewModel);
-            NewReleaseItemController newReleaseItemController = new NewReleaseItemController(model, newReleaseItemView);
+            QuizItemView quizItemView = new QuizItemView(quizItemViewModel);
+            QuizItemController quizItemController = new QuizItemController(model, quizItemView);
 
-            newReleaseItemController.addSubscriber(playQuizPageControllerMediator);
-            newReleaseItemViews.add(newReleaseItemView);
+            quizItemController.addSubscriber(playQuizPageControllerMediator);
+            quizItemViews.add(quizItemView);
         });
 
         SectionHeaderViewModel sectionHeaderViewModel = new SectionHeaderViewModel("New Release");
-        NewReleaseSectionViewModel newReleaseSectionViewModel = new NewReleaseSectionViewModel(newReleaseItemViews.toArray(NewReleaseItemView[]::new));
+        QuizGridViewModel quizGridViewModel = new QuizGridViewModel(quizItemViews.toArray(QuizItemView[]::new));
+        QuizGridView quizGridView = new QuizGridView(quizGridViewModel);
+        NewReleaseSectionViewModel newReleaseSectionViewModel = new NewReleaseSectionViewModel(quizGridView);
+
         return new NewReleaseSectionView(sectionHeaderViewModel, newReleaseSectionViewModel);
     }
 }
