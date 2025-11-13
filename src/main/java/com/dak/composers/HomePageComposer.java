@@ -2,11 +2,10 @@ package com.dak.composers;
 
 import com.dak.controllers.CategoryItemController;
 import com.dak.controllers.QuizItemController;
-import com.dak.db.Database;
-import com.dak.db.tables.CategoryTable;
-import com.dak.db.tables.QuizCategoryTable;
+import com.dak.events.mediators.CategoryItemControllerMediator;
 import com.dak.events.mediators.PlayQuizPageControllerMediator;
 import com.dak.models.CategoryModel;
+import com.dak.models.QuizCategoryModel;
 import com.dak.models.QuizModel;
 import com.dak.views.*;
 import com.dak.views.utils.ImageLoader;
@@ -14,110 +13,89 @@ import com.dak.views.viewModels.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class HomePageComposer {
+    private static final List<QuizModel> quizModels = QuizModel.findAll();
+    private static final Map<QuizModel, List<CategoryModel>> quizCategoryMap = new HashMap<>();
+
     @Contract(" -> new")
     public static @NotNull HomePageView createHomePage() {
-        NewReleaseSectionView newReleaseSectionView;
+        loadQuizCategory();
 
-        try {
-            newReleaseSectionView = newReleaseSection();
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
+        HomePageViewModel homePageViewModel = new HomePageViewModel(createCategorySection(), createNewReleaseSection());
 
-        HomePageViewModel homePageViewModel = new HomePageViewModel(createCategorySection(), newReleaseSectionView);
         return new HomePageView(homePageViewModel);
     }
 
     @Contract(" -> new")
-    public static @NotNull CategorySectionView createCategorySection() {
-        SectionHeaderViewModel sectionHeaderViewModel = new SectionHeaderViewModel("Categories");
+    private static @NotNull CategorySectionView createCategorySection() {
+        CategoryItemControllerMediator mediator = new CategoryItemControllerMediator(quizCategoryMap);
 
-        List<CategoryItemView> categoryItemViews = CategoryModel
-                .findAll()
-                .stream()
+        List<CategoryItemView> views = CategoryModel.findAll().stream()
                 .map(model -> {
-                    CategoryItemViewModel viewModel = new CategoryItemViewModel(ImageLoader.load(model.getImage()));
-                    CategoryItemView view = new CategoryItemView(viewModel);
-                    new CategoryItemController(model, view);
-                    return view;
+                    CategoryItemViewModel categoryItemViewModel = new CategoryItemViewModel(ImageLoader.load(model.getImage()));
+                    CategoryItemView categoryItemView = new CategoryItemView(categoryItemViewModel);
+                    CategoryItemController categoryItemController = new CategoryItemController(model, categoryItemView);
+                    categoryItemController.addSubscriber(mediator);
+
+                    return categoryItemView;
                 })
                 .toList();
 
-        CategorySectionViewModel categorySectionViewModel = new CategorySectionViewModel(categoryItemViews.toArray(CategoryItemView[]::new));
+        SectionHeaderViewModel sectionHeaderViewModel = new SectionHeaderViewModel("Categories");
+        CategorySectionViewModel categorySectionViewModel = new CategorySectionViewModel(views.toArray(CategoryItemView[]::new));
+
         return new CategorySectionView(sectionHeaderViewModel, categorySectionViewModel);
     }
 
-    public static @NotNull NewReleaseSectionView newReleaseSection() throws SQLException {
-        List<QuizModel> quizModels = QuizModel.findAll();
-        HashMap<String, List<String>> quizCategoryImagesMap = new HashMap<>();
-
-        try (Connection conn = Database.getConnection()) {
-            try (Statement stmt = conn.createStatement()) {
-                stmt.executeUpdate("CREATE TEMPORARY TABLE temp_quiz_id (quiz_id CHAR(36));");
-            }
-
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO temp_quiz_id (quiz_id) VALUES (?)")) {
-                for (QuizModel quizModel : quizModels) {
-                    ps.setString(1, quizModel.getId().toString());
-                    ps.addBatch();
-                }
-
-                ps.executeBatch();
-            }
-
-            String querySql = String.format(
-                    """
-                    SELECT tqi.quiz_id, c.%s
-                    FROM temp_quiz_id tqi
-                    LEFT JOIN %s qc ON qc.%s = tqi.quiz_id
-                    LEFT JOIN %s c ON c.%s = qc.%s;
-                    """,
-                    CategoryTable.IMAGE,
-                    QuizCategoryTable.TABLE_NAME,
-                    QuizCategoryTable.QUIZ_ID,
-                    CategoryTable.TABLE_NAME,
-                    CategoryTable.ID,
-                    QuizCategoryTable.CATEGORY_ID
-            );
-
-            try (Statement stmt = conn.createStatement();
-                 ResultSet rs = stmt.executeQuery(querySql)) {
-                while (rs.next()) {
-                    String quizId = rs.getString("quiz_id");
-                    String image = rs.getString(CategoryTable.IMAGE);
-                    quizCategoryImagesMap.computeIfAbsent(quizId, (_) -> new ArrayList<>()).add(image);
-                }
-            }
-        }
-
-        PlayQuizPageControllerMediator playQuizPageControllerMediator = new PlayQuizPageControllerMediator();
+    private static @NotNull NewReleaseSectionView createNewReleaseSection() {
+        PlayQuizPageControllerMediator mediator = new PlayQuizPageControllerMediator();
         List<QuizItemView> quizItemViews = new ArrayList<>();
 
         quizModels.forEach(model -> {
+            List<CategoryModel> categoryModels = quizCategoryMap.getOrDefault(model, List.of());
+
             QuizItemViewModel quizItemViewModel = new QuizItemViewModel(
                     model.getTitle(),
                     model.getCreator(),
-                    quizCategoryImagesMap.get(model.getId().toString()).toArray(String[]::new)
+                    categoryModels.stream().map(CategoryModel::getImage).toArray(String[]::new)
             );
 
             QuizItemView quizItemView = new QuizItemView(quizItemViewModel);
             QuizItemController quizItemController = new QuizItemController(model, quizItemView);
+            quizItemController.addSubscriber(mediator);
 
-            quizItemController.addSubscriber(playQuizPageControllerMediator);
             quizItemViews.add(quizItemView);
         });
 
         SectionHeaderViewModel sectionHeaderViewModel = new SectionHeaderViewModel("New Release");
-        QuizGridViewModel quizGridViewModel = new QuizGridViewModel(quizItemViews.toArray(QuizItemView[]::new));
-        QuizGridView quizGridView = new QuizGridView(quizGridViewModel);
+        QuizGridView quizGridView = new QuizGridView(new QuizGridViewModel(quizItemViews.toArray(QuizItemView[]::new)));
         NewReleaseSectionViewModel newReleaseSectionViewModel = new NewReleaseSectionViewModel(quizGridView);
 
         return new NewReleaseSectionView(sectionHeaderViewModel, newReleaseSectionViewModel);
+    }
+
+    private static void loadQuizCategory() {
+        Map<String, CategoryModel> categoryById = CategoryModel
+                .findAll()
+                .stream()
+                .collect(Collectors.toMap(
+                        c -> c.getId().toString(),
+                        c -> c)
+                );
+
+        for (QuizModel quizModel : quizModels) {
+            List<QuizCategoryModel> quizCategoryModels = QuizCategoryModel.findManyByQuizId(quizModel.getId().toString());
+            List<CategoryModel> categoryModels = quizCategoryModels.stream()
+                    .map(qc -> Objects.requireNonNull(
+                            categoryById.get(qc.getCategoryId().toString()),
+                            () -> "Category not found for QuizCategoryModel with categoryId: " + qc.getCategoryId()
+                    ))
+                    .toList();
+
+            quizCategoryMap.put(quizModel, categoryModels);
+        }
     }
 }

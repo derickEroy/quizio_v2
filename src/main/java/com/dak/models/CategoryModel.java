@@ -14,8 +14,8 @@ import java.util.UUID;
 public class CategoryModel {
     private final UUID id;
 
-    private String name;
-    private String image;
+    private final String name;
+    private final String image;
 
     public CategoryModel(UUID id, String name, String image) {
         this.id = id;
@@ -31,16 +31,8 @@ public class CategoryModel {
         return this.name;
     }
 
-    public void setName(String newValue) {
-        this.name = newValue;
-    }
-
     public String getImage() {
         return this.image;
-    }
-
-    public void setImage(String newValue) {
-        this.image = newValue;
     }
 
     public static @NotNull List<CategoryModel> findAll() {
@@ -63,14 +55,18 @@ public class CategoryModel {
     }
 
     public static @Nullable CategoryModel findById(String id) {
-        String query = String.format("SELECT * FROM %s WHERE id = ?", CategoryTable.TABLE_NAME);
+        String query = String.format(
+                "SELECT * FROM %s WHERE %s = ? LIMIT 1",
+                CategoryTable.TABLE_NAME,
+                CategoryTable.ID
+        );
 
         try (Connection connection = Database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, id);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery();) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return CategoryMapper.toModel(resultSet);
                 } else {
